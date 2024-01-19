@@ -1,0 +1,11 @@
+name: bank-marketing-checkpoint
+config_version: 1.0
+class_name: SimpleCheckpoint
+run_name_template: "%Y%m%d-%H%M%S-bank-run"
+validations:
+  - batch_request:
+      datasource_name: bank_marketing_data
+      data_connector_name: csv_data_connector
+      data_asset_name: bank_marketing_dataset
+      data_connector_query: {}
+    expectation_suite_name: bank-marketing-expectations
