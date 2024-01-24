@@ -1,0 +1,16 @@
+version: "3"
+services:
+  mlflow-server:
+    container_name: mlflow-server
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - mlflow-net
+    volumes:
+      - ./mlflow-data:/mlflow
+      - ./mlflow-artifacts:/mlflow/artifacts
+
+networks:
+  mlflow-net:
+    driver: bridge
