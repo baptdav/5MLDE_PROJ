@@ -1,4 +1,5 @@
 import mlflow
+import mlflow.data
 from mlflow import MlflowClient
 from mlflow.models import set_signature, ModelSignature
 from mlflow.types import ColSpec, Schema
@@ -13,6 +14,17 @@ def log_metric(metric_name: str, metric_value):
     TODO: Docstring for log_metric
     """
     mlflow.log_metric(metric_name, metric_value)
+
+
+@task(name="Log model training input to MLFlow")
+def log_input_infos(input_infos: dict):
+    """
+    TODO: Docstring for log_input_infos
+    """
+    mlflow.log_dict(input_infos['great_expectation_tests_results'],
+                    'great_expectation_results/great_expectation_results.json')
+    # mlflow.log_input(mlflow.data.from_pandas(input_infos['train_df'], source=config.DATA_DOWNLOAD_PATH), 'training')
+    # mlflow.log_input(mlflow.data.from_pandas(input_infos['test_df'], source=config.DATA_DOWNLOAD_PATH), 'testing')
 
 
 @task(name="Log and register preprocessor to MLFlow")
@@ -79,16 +91,18 @@ def release_model(client: MlflowClient) -> None:
 
 
 @flow(name="Logging to MLFlow")
-def mlflow_logging(model, preprocessor, metric_name: str, metric_value, artifact_path: str = "models"):
+def mlflow_logging(input_infos: dict, model=None, preprocessor=None, metric_name: str = None, metric_value=None,
+                   artifact_path: str = "models"):
     """
     Flow to make all MLFlow operations(logging model and model's metrics and signature, releasing model's artifacts)
     """
     mlflow.set_tracking_uri(config.MLFLOW_TRACKING_URI)
     mlflow.set_experiment(config.MLFLOW_EXPERIMENT_NAME)
     client = MlflowClient()
-    print(client.tracking_uri)
     with mlflow.start_run() as run:
-        log_and_save_model(model=model, artifact_path=artifact_path, run_id=run.info.run_id)
-        log_metric(metric_name, metric_value)
-        log_preprocessor(preprocessor, run.info.run_id)
-        release_model(client)
+        log_input_infos(input_infos)
+        if preprocessor is not None and model is not None and metric_name is not None and metric_value is not None:
+            log_and_save_model(model=model, artifact_path=artifact_path, run_id=run.info.run_id)
+            log_metric(metric_name, metric_value)
+            log_preprocessor(preprocessor, run.info.run_id)
+            release_model(client)

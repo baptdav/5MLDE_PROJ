@@ -1,10 +1,15 @@
 {
-  "expectation_suite_name": "Direct Marketing Campaigns Dataset Expectations",
+  "data_asset_type": null,
+  "expectation_suite_name": "ge",
   "meta": {
     "title": "Direct Marketing Campaigns Dataset Expectations",
     "description": "Expectations for a dataset related to direct marketing campaigns of a Portuguese banking institution.",
     "author": "BBL",
     "created_at": "2024-01-19"
+  },
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.15.46"
   },
   "expectations": [
     {
@@ -55,12 +60,12 @@
       "expectation_type": "expect_column_values_to_be_between",
       "kwargs": {
         "column": "age",
-        "min_value": 18,
+        "min_value": 16,
         "max_value": 125
       },
       "meta": {
         "description": "Valid age range",
-        "notes": "Age should be between 18 (not minor) and 125 (inclusive)."
+        "notes": "Age should be between 16 and 125 (inclusive)."
       }
     },
     {

@@ -31,8 +31,8 @@ def get_col_by_type(x: pd.DataFrame) -> dict:
     """
     TODO: Docstring for get_col_by_type
     """
-    num_feat = ['age', 'campaign', 'emp.var.rate', 'cons.price.idx', 'cons.conf.idx', 'euribor3m', 'nr.employed',
-                'previous']
+    num_feat = ['age', 'campaign', 'emp.var.rate', 'cons.price.idx', 'cons.conf.idx',
+                'euribor3m', 'nr.employed', 'pdays', 'previous']
     cat_feat = []
     for column in x.columns:
         if not num_feat.__contains__(column):
@@ -68,20 +68,17 @@ def extract_x_y(df: pd.DataFrame, with_target: bool = True) -> dict:
     x = df
     y = None
     if with_target:
-        x.drop('y', axis=1, inplace=True)
         y = df['y']
+        x.drop('y', axis=1, inplace=True)
     return {'x': x, 'y': y}
 
 
 @flow(name="Preprocessing data")
-def process_data(path: str = None, df: pd.DataFrame = None, preprocessor: ColumnTransformer = None,
+def process_data(df: pd.DataFrame = None, preprocessor: ColumnTransformer = None,
                  with_target: bool = True) -> dict:
     """
     TODO
     """
-
-    if df is None:
-        df = load_data(path)
     if with_target:
         binarize_target(df)
     dict_xy = extract_x_y(df, with_target=with_target)

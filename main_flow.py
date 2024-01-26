@@ -1,5 +1,4 @@
 import os
-
 import numpy as np
 from prefect import flow
 from prefect.client.schemas.schedules import IntervalSchedule
@@ -21,11 +20,11 @@ def main_flow(local_storage: str = config.LOCAL_STORAGE) -> None:
         os.makedirs(local_storage)
     data_dict = load_data()
     if data_dict['are_great_expectation_tests_passed']:
-        train_data = process_data(df=data_dict["train"])
-        test_data = process_data(df=data_dict["test"])
+        train_data = process_data(df=data_dict["train_df"])
+        test_data = process_data(df=data_dict["test_df"], preprocessor=train_data['preprocessor'])
         model_dict = train_and_evaluate_model(train_data['x'], np.array(train_data['y']),
                                               test_data['x'], np.array(test_data['y']))
-        mlflow_logging(model=model_dict['model'], preprocessor=train_data['preprocessor'],
+        mlflow_logging(input_infos=data_dict, model=model_dict['model'], preprocessor=train_data['preprocessor'],
                        metric_name=model_dict['metric_name'], metric_value=model_dict['metric'])
 
 
