@@ -9,7 +9,6 @@ services:
       - mlflow-net
     volumes:
       - ./mlflow-data:/mlflow
-      - ./mlflow-artifacts:/mlflow/artifacts
 
 networks:
   mlflow-net:

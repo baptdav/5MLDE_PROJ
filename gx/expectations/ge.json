@@ -1,0 +1,87 @@
+{
+  "expectation_suite_name": "Direct Marketing Campaigns Dataset Expectations",
+  "meta": {
+    "title": "Direct Marketing Campaigns Dataset Expectations",
+    "description": "Expectations for a dataset related to direct marketing campaigns of a Portuguese banking institution.",
+    "author": "BBL",
+    "created_at": "2024-01-19"
+  },
+  "expectations": [
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "housing",
+        "value_set": [
+          "yes",
+          "no",
+          "unknown"
+        ]
+      },
+      "meta": {
+        "description": "Housing loan status",
+        "notes": "Valid values include yes, no, unknown."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "loan",
+        "value_set": [
+          "yes",
+          "no",
+          "unknown"
+        ]
+      },
+      "meta": {
+        "description": "Personal loan status",
+        "notes": "Valid values include yes, no, unknown."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "y",
+        "value_set": [
+          "yes",
+          "no"
+        ]
+      },
+      "meta": {
+        "description": "Subscription to term deposit",
+        "notes": "Valid values include yes, no."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "age",
+        "min_value": 18,
+        "max_value": 125
+      },
+      "meta": {
+        "description": "Valid age range",
+        "notes": "Age should be between 18 (not minor) and 125 (inclusive)."
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "age"
+      },
+      "meta": {
+        "description": "Age of client",
+        "notes": "Age shouldn't be null."
+      }
+    },
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {
+        "description": "Minimum number of rows",
+        "notes": "The dataset should have at least one row."
+      }
+    }
+  ]
+}
