@@ -17,7 +17,7 @@ Puis attendre ~2 minutes que tout s'execute.
 
 ## Tests Great Expectations
 
-TODO : 
+TODO : Dire ce qu'on vérifie et préciser que les tests sont lancés avant le prétraitement des données
 
 ## Workflow Prefect
 
