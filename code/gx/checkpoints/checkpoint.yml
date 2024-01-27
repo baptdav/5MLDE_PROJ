@@ -1,4 +1,4 @@
-name: bank-marketing-checkpoint
+name: checkpoint
 config_version: 1.0
 class_name: SimpleCheckpoint
 run_name_template: "%Y%m%d-%H%M%S-bank-run"

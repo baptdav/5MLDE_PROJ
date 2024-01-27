@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 from prefect import flow
 from prefect.client.schemas.schedules import IntervalSchedule
@@ -24,18 +25,19 @@ def main_flow(local_storage: str = config.LOCAL_STORAGE) -> None:
         test_data = process_data(df=data_dict["test_df"], preprocessor=train_data['preprocessor'])
         model_dict = train_and_evaluate_model(train_data['x'], np.array(train_data['y']),
                                               test_data['x'], np.array(test_data['y']))
+        # Le model a t'il une précision globale supérieur au seuil fixé ? Si oui on déploiera en 'Production'
+        is_releasable: bool = model_dict['metrics']['global_accuracy'] > config.RELEASE_ACCURACY_THRESHOLD
         mlflow_logging(input_infos=data_dict, model=model_dict['model'], preprocessor=train_data['preprocessor'],
-                       metric_name=model_dict['metric_name'], metric_value=model_dict['metric'])
+                       metrics_dict=model_dict['metrics'], is_releasable=is_releasable)
 
 
 modeling_deployment_every_sunday = Deployment.build_from_flow(
-    name="Model training Deployment",
+    name="KNN Model Deployment",
     flow=main_flow,
     version="1.0",
     tags=["model"],
-    schedule=IntervalSchedule(interval=10000)
+    schedule=IntervalSchedule(interval=86400)
 )
 
 if __name__ == "__main__":
-    main_flow()
-    # modeling_deployment_every_sunday.apply()
+    modeling_deployment_every_sunday.apply()

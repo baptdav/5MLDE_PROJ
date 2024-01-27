@@ -2,14 +2,27 @@ version: "3"
 services:
   mlflow-server:
     container_name: mlflow-server
-    build: .
+    build: ./mlflow/
     ports:
       - "5000:5000"
     networks:
-      - mlflow-net
+      - mlde-net
     volumes:
       - ./mlflow-data:/mlflow
+  python-apps:
+    container_name: python-apps
+    build: ./python-apps/
+    ports:
+      - "4200:4200"
+      - "5001:5001"
+    networks:
+      - mlde-net
+    volumes:
+      - ../code/:/usr/src/app/code
+    depends_on:
+      mlflow-server:
+        condition: service_started
 
 networks:
-  mlflow-net:
+  mlde-net:
     driver: bridge

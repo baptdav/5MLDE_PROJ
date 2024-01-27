@@ -9,11 +9,12 @@ import config
 
 
 @task(name="Log model metric to MLFlow")
-def log_metric(metric_name: str, metric_value):
+def log_metrics(metrics_dict: dict):
     """
     TODO: Docstring for log_metric
     """
-    mlflow.log_metric(metric_name, metric_value)
+    for metric_name, metric_value in metrics_dict.items():
+        mlflow.log_metric(metric_name, metric_value)
 
 
 @task(name="Log model training input to MLFlow")
@@ -91,8 +92,8 @@ def release_model(client: MlflowClient) -> None:
 
 
 @flow(name="Logging to MLFlow")
-def mlflow_logging(input_infos: dict, model=None, preprocessor=None, metric_name: str = None, metric_value=None,
-                   artifact_path: str = "models"):
+def mlflow_logging(input_infos: dict, model=None, preprocessor=None, metrics_dict: dict = None,
+                   is_releasable: bool = None, artifact_path: str = "models"):
     """
     Flow to make all MLFlow operations(logging model and model's metrics and signature, releasing model's artifacts)
     """
@@ -101,8 +102,9 @@ def mlflow_logging(input_infos: dict, model=None, preprocessor=None, metric_name
     client = MlflowClient()
     with mlflow.start_run() as run:
         log_input_infos(input_infos)
-        if preprocessor is not None and model is not None and metric_name is not None and metric_value is not None:
+        if preprocessor is not None and model is not None and metrics_dict is not None:
             log_and_save_model(model=model, artifact_path=artifact_path, run_id=run.info.run_id)
-            log_metric(metric_name, metric_value)
+            log_metrics(metrics_dict)
             log_preprocessor(preprocessor, run.info.run_id)
-            release_model(client)
+            if is_releasable:
+                release_model(client)

@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 import pandas as pd
 from prefect import task, flow
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, classification_report
 from sklearn.neighbors import KNeighborsClassifier
 
 import config
@@ -38,9 +38,19 @@ def predict_if_client_will_subscribe(
 def evaluate_model(
         y_true: np.ndarray,
         y_pred: np.ndarray
-) -> float:
+) -> dict:
     """Calculate mean squared error for two arrays"""
-    return mean_squared_error(y_true, y_pred, squared=False)
+    classification_report_str = classification_report(y_true, y_pred, output_dict=True)
+
+    classification_report_dict = {"global_accuracy": classification_report_str.get('accuracy'),
+                                  "MSE": mean_squared_error(y_true, y_pred, squared=False)}
+
+    for key, value in classification_report_str.get('0').items():
+        classification_report_dict[f"{key}_over_negative_prediction"] = value
+    for key, value in classification_report_str.get('1').items():
+        classification_report_dict[f"{key}_over_positive_prediction"] = value
+
+    return classification_report_dict
 
 
 @task(name="Model loading from pickle file")
@@ -72,7 +82,7 @@ def train_and_evaluate_model(
 
     model = train_model(x_train, y_train)
     prediction = predict_if_client_will_subscribe(x_test, model)
-    mse = evaluate_model(y_test, prediction)
-    model_obj = {'model': model, 'metric': mse, 'metric_name': 'mse'}
+    metrics_dict = evaluate_model(y_test, prediction)
+    model_obj = {'model': model, 'metrics': metrics_dict}
     save_pickle(f"{local_storage}/model.pickle", model_obj)
     return model_obj
