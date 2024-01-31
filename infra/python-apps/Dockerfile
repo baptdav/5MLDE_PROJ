@@ -18,4 +18,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY scripts/** /usr/src/app/scripts/
 
+RUN chmod +x /usr/src/app/scripts/*
+
+
 CMD ["/usr/src/app/scripts/entrypoint_script.sh"]
