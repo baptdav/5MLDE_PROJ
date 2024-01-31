@@ -9,6 +9,8 @@ Ports utilisés :
 - 5001 : API
 - 4200 : Prefect
 
+> Avis aux utilisateurs macOS : le port 5000 est utilisé par AirPlay. Il faut désactiver le récepteur AirPlay en cherchant "Airplay" dans les préférences système. 
+
 ## Lancer le projet
 
 Lancer les commandes suivantes :
@@ -47,6 +49,10 @@ Les tests great expectations permettent de vérifier que les données en entrée
   }
 }
 ```
+
+Les résultats des tests sont disponibles dans le dossier great_expectations_reults des artifacts des experiments MLFlow.
+
+![expectations_results.png](assets/expectations_results.png)
 
 ## Workflow Prefect
 
